@@ -1,8 +1,10 @@
 package it.cgl.justmarket.models;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
+import javax.persistence.ManyToMany;
 import it.cgl.justmarket.models.enums.Categoria;
 import it.cgl.justmarket.models.enums.Unita;
 
@@ -40,6 +42,10 @@ public class Prodotto {
 	
 	private int sconto;
 
+	@ManyToMany(mappedBy="listaProdotti")
+	private List<User> user;
+
+	
 	public int getId() {
 		return id;
 	}

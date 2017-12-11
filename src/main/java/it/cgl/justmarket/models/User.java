@@ -50,6 +50,15 @@ public class User {
 	@JoinColumn(name="User_id")
 	private List<CreditCard> listaCreditCard;
 		
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(
+		      name="USER_PRODJ",
+		      joinColumns= @JoinColumn (name="USERJ_ID", referencedColumnName="ID"),
+		      inverseJoinColumns=@JoinColumn(name="PRODJ_ID", referencedColumnName="ID")
+		      )
+	private List<Prodotto> listaProdotti;
+	
 	public User() {
 		this.listaCreditCard = new ArrayList<CreditCard>();
 	}
