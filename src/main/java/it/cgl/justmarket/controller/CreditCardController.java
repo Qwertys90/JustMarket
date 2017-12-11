@@ -1,5 +1,6 @@
 package it.cgl.justmarket.controller;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -70,6 +71,8 @@ public class CreditCardController {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			User user = userService.findByUsername(auth.getName());	
 			creditCard.setUser(user);
+			String encodedString = Base64.getEncoder().encodeToString(creditCard.getNumeroCarta().getBytes());
+			creditCard.setNumeroCarta(encodedString);
 			CreditCard saved = creditCardService.saveCreditCard(creditCard);
 			return new ResponseEntity<CreditCard>(saved, HttpStatus.CREATED);
 		} catch (Exception e) {
