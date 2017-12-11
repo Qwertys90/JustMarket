@@ -46,4 +46,9 @@ public class ProdottoServiceImpl implements ProdottoService{
 		return repo.findByQuantitaGreaterThanEqual(quantita);
 	}
 
+	@Override
+	public List<Prodotto> findByUser_id(int id) {
+		return repo.findByUser_id(id);
+	}
+
 }
