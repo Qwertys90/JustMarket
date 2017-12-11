@@ -15,7 +15,7 @@ public class CreditCard {
 	
 	private String cognome;
 
-	private int numeroCarta;
+	private String numeroCarta;
 
 	private int cvv;
 		
@@ -58,11 +58,11 @@ public class CreditCard {
 		this.cognome = cognome;
 	}
 
-	public int getNumeroCarta() {
+	public String getNumeroCarta() {
 		return numeroCarta;
 	}
 
-	public void setNumeroCarta(int numeroCarta) {
+	public void setNumeroCarta(String numeroCarta) {
 		this.numeroCarta = numeroCarta;
 	}
 
