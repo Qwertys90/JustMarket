@@ -24,7 +24,7 @@ public class Prodotto {
 	
 	private Categoria categoria;
 	
-	private double quantitaDisponibile;
+	private double quantita;
 	
 	private double quantitaDaAcquistare;
 	
@@ -97,11 +97,11 @@ public class Prodotto {
 	}
 
 	public double getQuantitaDisponibile() {
-		return quantitaDisponibile;
+		return quantita;
 	}
 
 	public void setQuantitaDisponibile(double quantitaDisponibile) {
-		this.quantitaDisponibile = quantitaDisponibile;
+		this.quantita = quantitaDisponibile;
 	}
 
 	public double getQuantitaDaAcquistare() {
@@ -163,7 +163,7 @@ public class Prodotto {
 	@Override
 	public String toString() {
 		return "Prodotto [id=" + id + ", img=" + img + ", marca=" + marca + ", nome=" + nome + ", descrizione="
-				+ descrizione + ", dataScadenza=" + dataScadenza + ", quantitaDisponibile=" + quantitaDisponibile
+				+ descrizione + ", dataScadenza=" + dataScadenza + ", quantitaDisponibile=" + quantita
 				+ ", quantitaDaAcquistare=" + quantitaDaAcquistare + ", prezzoUnitario=" + prezzoUnitario
 				+ ", prezzoNoIva=" + prezzoNoIva + ", prezzoIvato=" + prezzoIvato + ", offerta=" + offerta + ", sconto="
 				+ sconto + "]";
