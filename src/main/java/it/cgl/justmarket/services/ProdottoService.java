@@ -13,7 +13,7 @@ public interface ProdottoService {
 	
 	void deleteProdotto (int id);
 	
-	public Prodotto findByid (int id);
+	public Prodotto findById (int id);
 	
 	public List<Prodotto> findByCategoria (Categoria categoria);
 	

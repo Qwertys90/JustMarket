@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.cgl.justmarket.models.CreditCard;
 import it.cgl.justmarket.models.Prodotto;
 import it.cgl.justmarket.models.User;
+import it.cgl.justmarket.models.enums.Categoria;
 import it.cgl.justmarket.services.CreditCardService;
 import it.cgl.justmarket.services.ProdottoService;
 import it.cgl.justmarket.services.UserService;
@@ -53,6 +55,31 @@ public class ProdottoController {
 		}
 	}
 	
+	@GetMapping("/getcategoria/{categoria}")
+	public ResponseEntity<List<Prodotto>> findByCategoria(@PathVariable Categoria categoria) {
+		try {
+			List<Prodotto> listaProdotti = prodottoService.findByCategoria(categoria);
+			logger.info(listaProdotti.toString());
+			return new ResponseEntity<List<Prodotto>>(listaProdotti, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("Errore " + e);
+			return new ResponseEntity<List<Prodotto>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/getdisponibilita/{quantita}")
+	public ResponseEntity<List<Prodotto>> findByQuantitaGreaterThanEqual(@PathVariable double quantita) {
+		try {
+			List<Prodotto> listaProdotti = prodottoService.findByQuantitaGreaterThanEqual(quantita);
+			logger.info(listaProdotti.toString());
+			return new ResponseEntity<List<Prodotto>>(listaProdotti, HttpStatus.OK);
+		} catch (Exception e) {
+			logger.error("Errore " + e);
+			return new ResponseEntity<List<Prodotto>>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 	@GetMapping("/getbyid/{id}")
 	public ResponseEntity<Prodotto> findByIdProdotto (@PathVariable int id){
 		try {
@@ -63,11 +90,11 @@ public class ProdottoController {
 		}
 	}
 	
-	@PostMapping("/addprodotto/{prodottoid}/{carta}")
-	public ResponseEntity<User> addProdotto(@PathVariable("prodottoid") int idCell,@PathVariable("carta") int idCarta) {
+	@PostMapping("/acquista/{prodottoid}/{carta}")
+	public ResponseEntity<User> addProdotto(@PathVariable("prodottoid") int idProd,@PathVariable("carta") int idCarta) {
 		try {
 			CreditCard card = creditCardService.findById(idCarta);
-			Prodotto prodotto = prodottoService.findById(idCell);
+			Prodotto prodotto = prodottoService.findById(idProd);
 			LocalDate dNow = LocalDate.now();
 		    logger.info("anno" + dNow);
 		    //-----
@@ -81,14 +108,14 @@ public class ProdottoController {
 			if(prodotto.getQuantita()>0 && dNow.isBefore(scadenza)) {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			User user = userService.findByUsername(auth.getName());			
-			user.getListaProducts().add(prodottoService.findById(idCell));
+			user.getListaProdotti().add(prodottoService.findById(idProd));
 			userService.saveUser(user);
 			prodotto.setQuantita(prodotto.getQuantita()-1);
 			prodottoService.saveOrUpdateProdotto(prodotto);
 			//------
-			int credito = card.getCredito();
-			card.setCredito(credito-prodotto.getPrezzo());
-			creditCardService.saveCreditCard(card);
+			//int credito = card.getCredito();
+			//card.setCredito(credito-prodotto.getPrezzo());
+			//creditCardService.saveCreditCard(card);
 			//---------
 			return new ResponseEntity<User>(HttpStatus.OK);
 			}else {
@@ -105,7 +132,7 @@ public class ProdottoController {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			int userid = userService.findByUsername(auth.getName()).getId();	
-			List<Prodotto> listaProdotti = prodottoService.findByUserId(userid);
+			List<Prodotto> listaProdotti = prodottoService.findByUser_id(userid);
 			return new ResponseEntity<List<Prodotto>>(listaProdotti, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.error("Errore " + e);
@@ -114,4 +141,4 @@ public class ProdottoController {
 	}
 }
 
-}
+

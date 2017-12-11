@@ -31,10 +31,7 @@ public class ProdottoServiceImpl implements ProdottoService{
 		repo.delete(id);
 	}
 
-	@Override
-	public Prodotto findByid(int id) {
-		return repo.findOne(id);
-	}
+
 
 	@Override
 	public List<Prodotto> findByCategoria(Categoria categoria) {
@@ -49,6 +46,11 @@ public class ProdottoServiceImpl implements ProdottoService{
 	@Override
 	public List<Prodotto> findByUser_id(int id) {
 		return repo.findByUser_id(id);
+	}
+
+	@Override
+	public Prodotto findById(int id) {
+		return repo.findOne(id);
 	}
 
 }

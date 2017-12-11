@@ -102,12 +102,12 @@ public class Prodotto {
 		this.categoria = categoria;
 	}
 
-	public double getQuantitaDisponibile() {
+	public double getQuantita() {
 		return quantita;
 	}
 
-	public void setQuantitaDisponibile(double quantitaDisponibile) {
-		this.quantita = quantitaDisponibile;
+	public void setQuantita(double quantita) {
+		this.quantita = quantita;
 	}
 
 	public double getQuantitaDaAcquistare() {
@@ -164,6 +164,16 @@ public class Prodotto {
 
 	public void setSconto(int sconto) {
 		this.sconto = sconto;
+	}
+	
+	
+
+	public List<User> getUser() {
+		return user;
+	}
+
+	public void setUser(List<User> user) {
+		this.user = user;
 	}
 
 	@Override

@@ -61,6 +61,7 @@ public class User {
 	
 	public User() {
 		this.listaCreditCard = new ArrayList<CreditCard>();
+		this.listaProdotti = new ArrayList<Prodotto>();
 	}
 	
 	public int getId() {
@@ -141,6 +142,16 @@ public class User {
 	public void setListaCreditCard(List<CreditCard> listaCreditCard) {
 		this.listaCreditCard = listaCreditCard;
 	}
+	
+	
+	public List<Prodotto> getListaProdotti() {
+		return listaProdotti;
+	}
+
+	public void setListaProdotti(List<Prodotto> listaProdotti) {
+		this.listaProdotti = listaProdotti;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", via=" + via + ", cap=" + cap + ", citta=" + citta + ", provincia=" + provincia
