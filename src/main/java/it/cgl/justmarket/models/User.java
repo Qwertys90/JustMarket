@@ -51,6 +51,11 @@ public class User {
 	private List<CreditCard> listaCreditCard;
 		
 	@JsonIgnore
+	@OneToMany
+	@JoinColumn(name="User_id")
+	private List<Storico> listaStorico;
+	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(
 		      name="USER_PRODJ",

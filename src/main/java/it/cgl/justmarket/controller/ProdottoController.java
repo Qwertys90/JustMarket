@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.cgl.justmarket.models.CreditCard;
 import it.cgl.justmarket.models.Prodotto;
+import it.cgl.justmarket.models.Storico;
 import it.cgl.justmarket.models.User;
 import it.cgl.justmarket.models.enums.Categoria;
 import it.cgl.justmarket.services.CreditCardService;
 import it.cgl.justmarket.services.ProdottoService;
+import it.cgl.justmarket.services.StoricoService;
 import it.cgl.justmarket.services.UserService;
 
 
@@ -33,6 +35,9 @@ import it.cgl.justmarket.services.UserService;
 @RestController
 @RequestMapping("/prodotti")
 public class ProdottoController {
+	
+	@Autowired
+	private StoricoService storicoService;
 	
 	@Autowired
 	private CreditCardService creditCardService;
@@ -100,10 +105,10 @@ public class ProdottoController {
 		}
 	}
 	
-	@GetMapping("/getdisponibilita/{quantita}")
-	public ResponseEntity<List<Prodotto>> findByQuantitaGreaterThanEqual(@PathVariable double quantita) {
+	@GetMapping("/getdisponibilita")
+	public ResponseEntity<List<Prodotto>> findByQuantitaGreaterThanEqual() {
 		try {
-			List<Prodotto> listaProdotti = prodottoService.findByQuantitaGreaterThanEqual(quantita);
+			List<Prodotto> listaProdotti = prodottoService.findByQuantitaGreaterThan(0);
 			logger.info(listaProdotti.toString());
 			return new ResponseEntity<List<Prodotto>>(listaProdotti, HttpStatus.OK);
 		} catch (Exception e) {
@@ -123,9 +128,13 @@ public class ProdottoController {
 		}
 	}
 	
-	@PostMapping("/acquista/{prodottoid}/{carta}")
-	public ResponseEntity<User> addProdotto(@PathVariable("prodottoid") int idProd,@PathVariable("carta") int idCarta) {
+	@PostMapping("/acquista/{prodottoid}/{carta}/{quantAcquista}")
+	public ResponseEntity<User> addProdotto(@PathVariable("prodottoid") int idProd,@PathVariable("carta") int idCarta,@PathVariable("quantAcquista") int quant) {
 		try {
+			boolean check=false;
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			User user = userService.findByUsername(auth.getName());		
+
 			CreditCard card = creditCardService.findById(idCarta);
 			Prodotto prodotto = prodottoService.findById(idProd);
 			LocalDate dNow = LocalDate.now();
@@ -138,10 +147,26 @@ public class ProdottoController {
 		    //-----
 		    logger.info("anno" + scadenza);
 		    logger.info("prova" + dNow.isBefore(scadenza));
-			if(prodotto.getQuantita()>0 && dNow.isBefore(scadenza)) {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			User user = userService.findByUsername(auth.getName());			
+		    for(CreditCard a : user.getListaCreditCard()) {
+				if(a.getId()==idCarta)
+					check=true;
+			}
+			if(prodotto.getQuantita()>=quant && quant>0 && dNow.isBefore(scadenza) && check==true) {
+			    logger.info("provaasd");
+
+			Storico storico=new Storico();
+			storico.setDate(dNow.toString());
+			storico.setMarca(prodotto.getMarca());
+			storico.setNome(prodotto.getNome());
+			storico.setPrezzoIvato(prodotto.getPrezzoIvato());
+			storico.setPrezzoUnitario(prodotto.getPrezzoUnitario());
+			storico.setQuantita(quant);
+			storico.setPrezzoTotale(quant*prodotto.getPrezzoIvato());
+			storico.setUser(user);
+			storicoService.save(storico);
+			
 			user.getListaProdotti().add(prodottoService.findById(idProd));
+			
 			userService.saveUser(user);
 			prodotto.setQuantita(prodotto.getQuantita()-1);
 			prodottoService.saveOrUpdateProdotto(prodotto);

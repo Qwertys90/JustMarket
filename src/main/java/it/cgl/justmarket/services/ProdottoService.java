@@ -17,7 +17,7 @@ public interface ProdottoService {
 	
 	public List<Prodotto> findByCategoria (Categoria categoria);
 	
-	List<Prodotto> findByQuantitaGreaterThanEqual ( double quantita );
+	List<Prodotto> findByQuantitaGreaterThan( double quantita );
 	
 	List<Prodotto> findByUser_id(int id);
 

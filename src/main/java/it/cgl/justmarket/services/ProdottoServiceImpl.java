@@ -39,8 +39,8 @@ public class ProdottoServiceImpl implements ProdottoService{
 	}
 
 	@Override
-	public List<Prodotto> findByQuantitaGreaterThanEqual(double quantita) {
-		return repo.findByQuantitaGreaterThanEqual(quantita);
+	public List<Prodotto> findByQuantitaGreaterThan(double quantita) {
+		return repo.findByQuantitaGreaterThan(quantita);
 	}
 
 	@Override

@@ -80,10 +80,20 @@ public class CreditCardController {
 			User user = userService.findByUsername(auth.getName());	
 			CreditCard creditCard = creditCardService.findById(idCard);
 			List<CreditCard> listaCard = creditCardService.findByUser_id(user.getId());
-			listaCard.remove(creditCard);
-			user.setListaCreditCard(listaCard);
-			userService.saveUser(user);
+			boolean check = false;
+			for(CreditCard a : listaCard) {
+				if(a.getId()==idCard) 
+					check=true;
+			}
+//			listaCard.remove(creditCard);
+//			user.setListaCreditCard(listaCard);
+//			userService.saveUser(user);
+			if(check==true) {
+			creditCardService.deleteCreditCard(idCard);
 			return new ResponseEntity<User>(HttpStatus.OK);
+			}else {
+				return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		} catch (Exception e) {
 			return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
