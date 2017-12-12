@@ -61,7 +61,7 @@ public class ProdottoController {
 			Prodotto saved = prodottoService.saveOrUpdateProdotto(prodotto);
 			logger.info(saved + " saved");
 			saved.setPrezzoIvato(saved.getPrezzoUnitario());
-			saved.setPrezzoNoIva(((saved.getPrezzoIvato()*22)/100)+saved.getPrezzoIvato());
+			saved.setPrezzoNoIva(((saved.getPrezzoIvato()*22)/100) - saved.getPrezzoIvato());
 			return new ResponseEntity<Prodotto>(saved, HttpStatus.CREATED);
 		} catch (Exception e) {
 			logger.error("Errore " + e);
