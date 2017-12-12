@@ -58,10 +58,10 @@ public class ProdottoController {
 	@PostMapping("/saveupdate")
 	public ResponseEntity<Prodotto> saveOrUpdateProdotto(@RequestBody Prodotto prodotto) {
 		try {
+			prodotto.setPrezzoIvato(prodotto.getPrezzoUnitario());
+			prodotto.setPrezzoNoIva((Math.floor(prodotto.getPrezzoIvato()/122*10000))/100);
 			Prodotto saved = prodottoService.saveOrUpdateProdotto(prodotto);
 			logger.info(saved + " saved");
-			saved.setPrezzoIvato(saved.getPrezzoUnitario());
-			saved.setPrezzoNoIva(((saved.getPrezzoIvato()*22)/100) - saved.getPrezzoIvato());
 			return new ResponseEntity<Prodotto>(saved, HttpStatus.CREATED);
 		} catch (Exception e) {
 			logger.error("Errore " + e);
@@ -148,7 +148,7 @@ public class ProdottoController {
 			// -----
 			
 			// trasforma data prodotto
-			DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yy");
+			DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			String dat = prodotto.getDataScadenza();
 			YearMonth scadMese = YearMonth.parse(dat, format);
 			int giorno = Integer.parseInt(prodotto.getDataScadenza().split("/")[0]);
