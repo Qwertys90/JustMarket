@@ -186,6 +186,8 @@ public class Prodotto {
 	}
 
 	public Prodotto() {
+		this.prezzoUnitario = this.prezzoIvato;
+		this.prezzoIvato = ((prezzoNoIva*22)/100)+prezzoNoIva;
 	}
 	
 	

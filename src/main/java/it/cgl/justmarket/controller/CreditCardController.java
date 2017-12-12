@@ -31,8 +31,6 @@ public class CreditCardController {
 
 	private static final Logger logger = Logger.getLogger(CreditCardServiceImpl.class.getName());
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private CreditCardService creditCardService;
