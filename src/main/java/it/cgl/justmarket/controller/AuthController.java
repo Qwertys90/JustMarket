@@ -1,29 +1,42 @@
 package it.cgl.justmarket.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import it.cgl.justmarket.models.CreditCard;
+import it.cgl.justmarket.models.Storico;
 import it.cgl.justmarket.models.User;
 import it.cgl.justmarket.models.enums.UserProfileType;
 import it.cgl.justmarket.services.UserService;
 import it.cgl.justmarket.services.auth.AuthService;
 
-
 @RestController
 public class AuthController {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private AuthService authService;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -46,19 +59,30 @@ public class AuthController {
 	public User getModel() {
 		return new User();
 	}
-	
+
 	@RequestMapping("/delete")
 	public void deleteUser(int id) {
 		userService.deleteUser(id);
 	}
-	
+
 	@GetMapping("/islogged")
-	public boolean isLogged() {
-		if(SecurityContextHolder.getContext().getAuthentication() 
-		          instanceof AnonymousAuthenticationToken)
-		return false;
-		else {
-			return true;
+	public ResponseEntity<Boolean> isLogged() {
+		logger.info("testLogged");
+		if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+			logger.info("false");
+			return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+		} else {
+			logger.info("true");
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		}
+	}
+	
+	@GetMapping("/logoutApp")
+	public void logoutApp(HttpServletRequest request, HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth!= null) {
+			logger.info("loggedOut");
+			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
 	}
 
