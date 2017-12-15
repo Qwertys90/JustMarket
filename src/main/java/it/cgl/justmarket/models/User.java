@@ -2,6 +2,8 @@ package it.cgl.justmarket.models;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,6 +41,7 @@ public class User {
 	
 	private String cognome;
 	
+	@Column(unique=true)
 	private String username;
 	
 	private String password;
@@ -53,20 +56,10 @@ public class User {
 	@JsonIgnore
 	@OneToMany
 	@JoinColumn(name="User_id")
-	private List<Storico> listaStorico;
-	
-	@JsonIgnore
-	@ManyToMany
-	@JoinTable(
-		      name="USER_PRODJ",
-		      joinColumns= @JoinColumn (name="USERJ_ID", referencedColumnName="ID"),
-		      inverseJoinColumns=@JoinColumn(name="PRODJ_ID", referencedColumnName="ID")
-		      )
-	private List<Prodotto> listaProdotti;
+	private List<Transazione> transazioni;
 	
 	public User() {
 		this.listaCreditCard = new ArrayList<CreditCard>();
-		this.listaProdotti = new ArrayList<Prodotto>();
 	}
 	
 	public int getId() {
@@ -148,15 +141,6 @@ public class User {
 		this.listaCreditCard = listaCreditCard;
 	}
 	
-	
-	public List<Prodotto> getListaProdotti() {
-		return listaProdotti;
-	}
-
-	public void setListaProdotti(List<Prodotto> listaProdotti) {
-		this.listaProdotti = listaProdotti;
-	}
-
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", via=" + via + ", cap=" + cap + ", citta=" + citta + ", provincia=" + provincia

@@ -1,10 +1,7 @@
 package it.cgl.justmarket.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import it.cgl.justmarket.models.CreditCard;
-import it.cgl.justmarket.models.Storico;
 import it.cgl.justmarket.models.User;
 import it.cgl.justmarket.models.enums.UserProfileType;
 import it.cgl.justmarket.services.UserService;
@@ -45,12 +39,20 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public UserDetails authenticate(@RequestBody User principal) throws Exception {
+		logger.info("login"+principal);
 		return authService.authenticate(principal);
 	}
 
 	@PostMapping("/register")
 	public User addUser(@RequestBody User user) {
+		logger.info("reg");
 		user.setPassword(encoder.encode(user.getPassword()));
+		user.setProfileType(UserProfileType.ROLE_USER);
+		return userService.saveUser(user);
+	}
+	
+	@PostMapping("/modifica")
+	public User modUser(@RequestBody User user) {
 		user.setProfileType(UserProfileType.ROLE_USER);
 		return userService.saveUser(user);
 	}
@@ -76,11 +78,25 @@ public class AuthController {
 			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		}
 	}
-	
+
+	@GetMapping("/userdetails")
+	public ResponseEntity<User> userdetails() {
+		logger.info("detailsuser");
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+			User user = new User();
+			return new ResponseEntity<User>(user, HttpStatus.OK); 
+		}else {
+			User user = userService.findByUsername(auth.getName());
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+		}
+	}
+
 	@GetMapping("/logoutApp")
 	public void logoutApp(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if(auth!= null) {
+		if (auth != null) {
 			logger.info("loggedOut");
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}

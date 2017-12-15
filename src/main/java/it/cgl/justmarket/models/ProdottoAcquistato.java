@@ -1,17 +1,17 @@
 package it.cgl.justmarket.models;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import it.cgl.justmarket.models.enums.Categoria;
 import it.cgl.justmarket.models.enums.Unita;
 
 @Entity
-public class Prodotto {
+public class ProdottoAcquistato {
+
 	@Id
 	@GeneratedValue
 	private int id;
@@ -43,6 +43,9 @@ public class Prodotto {
 	private boolean offerta;
 	
 	private int sconto;
+	
+	@ManyToOne
+	private Transazione transazione;
 
 	public int getId() {
 		return id;
@@ -163,23 +166,23 @@ public class Prodotto {
 	public void setSconto(int sconto) {
 		this.sconto = sconto;
 	}
-	
-	
 
+	public Transazione getTransazione() {
+		return transazione;
+	}
 
+	public void setTransazione(Transazione transazione) {
+		this.transazione = transazione;
+	}
 
 	@Override
 	public String toString() {
-		return "Prodotto [id=" + id + ", img=" + img + ", marca=" + marca + ", nome=" + nome + ", descrizione="
-				+ descrizione + ", dataScadenza=" + dataScadenza + ", quantitaDisponibile=" + quantita
-				+ ", quantitaDaAcquistare=" + quantitaDaAcquistare + ", prezzoUnitario=" + prezzoUnitario
-				+ ", prezzoNoIva=" + prezzoNoIva + ", prezzoIvato=" + prezzoIvato + ", offerta=" + offerta + ", sconto="
-				+ sconto + "]";
-	}
-
-	public Prodotto() {
-		
-	}
+		return "ProdottoAcquistato [id=" + id + ", img=" + img + ", marca=" + marca + ", nome=" + nome
+				+ ", descrizione=" + descrizione + ", dataScadenza=" + dataScadenza + ", categoria=" + categoria
+				+ ", quantita=" + quantita + ", quantitaDaAcquistare=" + quantitaDaAcquistare + ", unita=" + unita
+				+ ", prezzoUnitario=" + prezzoUnitario + ", prezzoNoIva=" + prezzoNoIva + ", prezzoIvato=" + prezzoIvato
+				+ ", offerta=" + offerta + ", sconto=" + sconto + "]";
+	} 
 	
 	
 }

@@ -1,10 +1,6 @@
 package it.cgl.justmarket.controller;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +15,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import it.cgl.justmarket.models.CreditCard;
 import it.cgl.justmarket.models.Prodotto;
-import it.cgl.justmarket.models.Storico;
-import it.cgl.justmarket.models.User;
 import it.cgl.justmarket.models.enums.Categoria;
 import it.cgl.justmarket.services.CreditCardService;
 import it.cgl.justmarket.services.ProdottoService;
-import it.cgl.justmarket.services.StoricoService;
 import it.cgl.justmarket.services.UserService;
 
 @RestController
 @RequestMapping("/prodotti")
 public class ProdottoController {
-
-	@Autowired
-	private StoricoService storicoService;
 
 	@Autowired
 	private CreditCardService creditCardService;
@@ -126,89 +114,4 @@ public class ProdottoController {
 		}
 	}
 
-	@PostMapping("/acquista/{prodottoid}/{carta}/{quantAcquista}")
-	public ResponseEntity<User> addProdotto(@PathVariable("prodottoid") int idProd, @PathVariable("carta") int idCarta,
-			@PathVariable("quantAcquista") int quant) {
-		try {
-			boolean check = false;
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			User user = userService.findByUsername(auth.getName());
-
-			CreditCard card = creditCardService.findById(idCarta);
-			Prodotto prodotto = prodottoService.findById(idProd);
-			LocalDate dNow = LocalDate.now();
-			logger.info("anno" + dNow);
-			
-			// trasforma data carta
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
-			String date = card.getScadenza();
-			YearMonth scadenzaMese = YearMonth.parse(date, formatter);
-			LocalDate scadenza = scadenzaMese.atEndOfMonth();
-			// -----
-			
-			// trasforma data prodotto
-			DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			String dat = prodotto.getDataScadenza();
-			YearMonth scadMese = YearMonth.parse(dat, format);
-			int giorno = Integer.parseInt(prodotto.getDataScadenza().split("/")[0]);
-			logger.info(giorno+" giorno");
-			LocalDate sca = scadMese.atDay(giorno);
-			// -----
-			
-			logger.info("anno" + scadenza);
-			logger.info("prova" + dNow.isBefore(scadenza));
-			for (CreditCard a : user.getListaCreditCard()) {
-				if (a.getId() == idCarta)
-					check = true;
-			}
-			
-			if (prodotto.getQuantita() >= quant && quant > 0 && dNow.isBefore(scadenza) && check == true && dNow.isBefore(sca)) {
-				Storico storico = new Storico();
-				if (sca.isBefore(dNow.minusDays(3))) {
-					logger.info(sca+" scad");
-					storico.setPrezzoUnitario(prodotto.getPrezzoUnitario() * 0.6 * quant);
-				} else {
-					storico.setPrezzoTotale(quant * prodotto.getPrezzoUnitario());
-				}
-				storico.setDate(dNow.toString());
-				storico.setMarca(prodotto.getMarca());
-				storico.setNome(prodotto.getNome());
-				storico.setPrezzoIvato(prodotto.getPrezzoIvato());
-				storico.setPrezzoUnitario(prodotto.getPrezzoUnitario());
-				storico.setQuantita(quant);
-				storico.setUser(user);
-				storicoService.save(storico);
-
-				user.getListaProdotti().add(prodottoService.findById(idProd));
-
-				userService.saveUser(user);
-				prodotto.setQuantita(prodotto.getQuantita() - 1);
-				prodottoService.saveOrUpdateProdotto(prodotto);
-				// ------
-				// int credito = card.getCredito();
-				// card.setCredito(credito-prodotto.getPrezzo());
-				// creditCardService.saveCreditCard(card);
-				// ---------
-				return new ResponseEntity<User>(HttpStatus.OK);
-			} else {
-				return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		} catch (Exception e) {
-			logger.error("Errore " + e);
-			return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@GetMapping("/prodottiacquistati")
-	public ResponseEntity<List<Prodotto>> getAllAcquistati() {
-		try {
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			int userid = userService.findByUsername(auth.getName()).getId();
-			List<Prodotto> listaProdotti = prodottoService.findByUser_id(userid);
-			return new ResponseEntity<List<Prodotto>>(listaProdotti, HttpStatus.OK);
-		} catch (Exception e) {
-			logger.error("Errore " + e);
-			return new ResponseEntity<List<Prodotto>>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
 }
