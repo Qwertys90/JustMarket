@@ -29,11 +29,18 @@ public class Transazione {
 	@JoinColumn(name="User_id")
 	private List<ProdottoAcquistato> listaProdotti;
 	
+	public String getNumeroCarta() {
+		return numeroCarta;
+	}
+
+	public void setNumeroCarta(String numeroCarta) {
+		this.numeroCarta = numeroCarta;
+	}
+
 	@ManyToOne
 	private User user;
 	
-	@OneToOne
-	private CreditCard creditCard;
+	private String numeroCarta;
 		
 	private double prezzoNoIva;
 	
@@ -97,11 +104,10 @@ public class Transazione {
 
 	@Override
 	public String toString() {
-		return "Transazione [id=" + id + ", data=" + data + ", cartaDiCredito="
-				+ ", codiceTransazione=" + codiceTransazione + ", listaProdotti=" + listaProdotti + ", user=" + user
-				+ ", indirizzo=" + ", prezzoNoIva=" + prezzoNoIva + ", prezzoIva=" + prezzoIva + "]";
+		return "Transazione [id=" + id + ", data=" + data + ", codiceTransazione=" + codiceTransazione
+				+ ", listaProdotti=" + listaProdotti + ", user=" + user + ", numeroCarta=" + numeroCarta
+				+ ", prezzoNoIva=" + prezzoNoIva + ", prezzoIva=" + prezzoIva + "]";
 	}
-
 
 	
 }

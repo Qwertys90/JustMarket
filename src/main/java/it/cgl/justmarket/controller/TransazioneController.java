@@ -24,6 +24,7 @@ import it.cgl.justmarket.models.Prodotto;
 import it.cgl.justmarket.models.ProdottoAcquistato;
 import it.cgl.justmarket.models.Transazione;
 import it.cgl.justmarket.models.User;
+import it.cgl.justmarket.services.CreditCardService;
 import it.cgl.justmarket.services.CreditCardServiceImpl;
 import it.cgl.justmarket.services.ProdottoAcquistatoService;
 import it.cgl.justmarket.services.ProdottoService;
@@ -43,6 +44,8 @@ public class TransazioneController {
 	private UserService userService;
 	@Autowired
 	private ProdottoService prodottoService;
+	@Autowired
+	private CreditCardService creditService;
 
 	@GetMapping("/getmodel")
 	public ResponseEntity<Transazione> getModel() {
@@ -70,9 +73,10 @@ public class TransazioneController {
 		}
 	}
 
-	@PostMapping("/buy")
-	public ResponseEntity<String> buy(@RequestBody Transazione transazione){
+	@PostMapping("/buy/{id}")
+	public ResponseEntity<String> buy(@RequestBody Transazione transazione, @PathVariable int id){
 		logger.info(transazione+"");
+		transazione.setNumeroCarta(this.creditService.findById(id).getNumeroCarta());
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		logger.info("aaaa" + auth.getName());
 		User user = userService.findByUsername(auth.getName());
@@ -94,13 +98,15 @@ public class TransazioneController {
 
 		for(ProdottoAcquistato p : transazione.getListaProdotti())
 		{
+			logger.info(p+"");
 			if(p.getQuantita()>prodottoService.findById(p.getId()).getQuantita()) {
 				controlloQuantita=true;
 			}
 			prezzoTotale+=p.getPrezzoUnitario()*p.getQuantita();
 		}
 	
-		
+		logger.info("aaaa" + auth.getName());
+
 		if(!controlloQuantita) {
 			transazione.setData(dNow.toString());
 			transazione.setPrezzoIva(prezzoTotale);
@@ -115,7 +121,7 @@ public class TransazioneController {
 				ProdottoAcquistato prodNew = new ProdottoAcquistato();
 				prodNew.setMarca(p.getMarca());
 				prodNew.setNome(p.getNome());
-				prodNew.setQuantita(p.getQuantita());
+				prodNew.setQuantitaDaAcquistare(p.getQuantitaDaAcquistare());
 				prodNew.setTransazione(transazione);
 				nuovaLista.add(prodNew);
 				logger.info(prodNew+"");
@@ -130,7 +136,6 @@ public class TransazioneController {
 		}
 		if(controlloQuantita) {
 			return new ResponseEntity<String>("Uno o più prodotti non rispecchiano le quantità massime",HttpStatus.OK);
-
 		}else {
 //			if(controlloScadenza) {
 //			return new ResponseEntity<String>("Carta di credito scaduta",HttpStatus.OK);
