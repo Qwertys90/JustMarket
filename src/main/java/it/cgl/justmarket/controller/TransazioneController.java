@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
@@ -108,11 +109,20 @@ public class TransazioneController {
 		logger.info("aaaa" + auth.getName());
 
 		if(!controlloQuantita) {
+			Random random = new Random();
+			String resultNumber = "";
+			String result = "";
+			String number = "123456789";
+			String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			for(int i=0;i<3;i++){
+			      result += alphabet.charAt(random.nextInt(alphabet.length()));
+			      resultNumber += random.nextInt(number.length());
+			  }
 			transazione.setData(dNow.toString());
 			transazione.setPrezzoIva(prezzoTotale);
 			transazione.setPrezzoNoIva(prezzoTotale/122*100);
 			transazione.setUser(user);
-			transazione.setCodiceTransazione(dNow.toString()+"prova");
+			transazione.setCodiceTransazione(dNow.toString() + "-" + result + resultNumber + "-" + transazione.getId());
 			logger.info(transazione.toString());
 			List<ProdottoAcquistato> listaTrans2 = transazione.getListaProdotti(); 
 			transazione.setListaProdotti(new ArrayList<ProdottoAcquistato>());
