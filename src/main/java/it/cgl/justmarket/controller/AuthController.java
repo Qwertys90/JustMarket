@@ -88,7 +88,9 @@ public class AuthController {
 			User user = new User();
 			return new ResponseEntity<User>(user, HttpStatus.OK); 
 		}else {
+
 			User user = userService.findByUsername(auth.getName());
+
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
 	}

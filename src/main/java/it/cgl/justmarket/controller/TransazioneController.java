@@ -63,10 +63,11 @@ public class TransazioneController {
 		try {
 
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			logger.info("aaaa" + auth.getName());
+			logger.info("getall1");
 			User user = userService.findByUsername(auth.getName());
+			List<Transazione> listaTransazione = transazioneService.findByUser(user);
+			logger.info("getall2");
 
-			List<Transazione> listaTransazione = transazioneService.findAll(user);
 			return new ResponseEntity<List<Transazione>>(listaTransazione, HttpStatus.OK);
 		} catch (Exception e) {
 			logger.info("a" + e);
@@ -103,7 +104,7 @@ public class TransazioneController {
 			if(p.getQuantita()>prodottoService.findById(p.getId()).getQuantita()) {
 				controlloQuantita=true;
 			}
-			prezzoTotale+=p.getPrezzoUnitario()*p.getQuantita();
+			prezzoTotale+=p.getPrezzoUnitario()*p.getQuantitaDaAcquistare();
 		}
 	
 		logger.info("aaaa" + auth.getName());
@@ -133,6 +134,7 @@ public class TransazioneController {
 				prodNew.setNome(p.getNome());
 				prodNew.setQuantitaDaAcquistare(p.getQuantitaDaAcquistare());
 				prodNew.setTransazione(transazione);
+				prodNew.setPrezzoUnitario(p.getPrezzoUnitario());
 				nuovaLista.add(prodNew);
 				logger.info(prodNew+"");
 				prodAcquiService.saveOrUpdateProdottoAcquistato(prodNew);

@@ -6,6 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import it.cgl.justmarket.models.enums.Categoria;
 import it.cgl.justmarket.models.enums.Unita;
 
@@ -44,6 +46,7 @@ public class ProdottoAcquistato {
 	
 	private int sconto;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Transazione transazione;
 

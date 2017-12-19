@@ -26,7 +26,8 @@ public class CreditCard {
 	private int cvv;
 		
 	private String scadenza;
-
+	
+	@JsonIgnore
 	@ManyToOne
 	private User user;
 

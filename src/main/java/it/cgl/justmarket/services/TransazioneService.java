@@ -9,7 +9,7 @@ public interface TransazioneService {
 	
 	Transazione findById(int id);
 	
-	List<Transazione> findAll(User user);
+	List<Transazione> findByUser(User user);
 
 	Transazione save(Transazione transazione);
 	

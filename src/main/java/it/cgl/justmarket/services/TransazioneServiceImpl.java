@@ -24,8 +24,8 @@ public class TransazioneServiceImpl implements TransazioneService {
 	}
 
 	@Override
-	public List<Transazione> findAll(User user) {
-		return (List<Transazione>) repo.findByUser(user);
+	public List<Transazione> findByUser(User user) {
+		return repo.findByUser(user);
 	}
 
 	@Override

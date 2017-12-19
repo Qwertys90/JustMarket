@@ -48,12 +48,12 @@ public class User {
 	
 	private UserProfileType profileType;
 	
-	@JsonIgnore
+	
 	@OneToMany
 	@JoinColumn(name="User_id")
 	private List<CreditCard> listaCreditCard;
 		
-	@JsonIgnore
+	
 	@OneToMany
 	@JoinColumn(name="User_id")
 	private List<Transazione> transazioni;
@@ -141,6 +141,14 @@ public class User {
 		this.listaCreditCard = listaCreditCard;
 	}
 	
+		public List<Transazione> getTransazioni() {
+		return transazioni;
+	}
+
+	public void setTransazioni(List<Transazione> transazioni) {
+		this.transazioni = transazioni;
+	}
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", via=" + via + ", cap=" + cap + ", citta=" + citta + ", provincia=" + provincia

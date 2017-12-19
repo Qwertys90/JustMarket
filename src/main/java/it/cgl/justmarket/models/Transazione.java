@@ -26,7 +26,7 @@ public class Transazione {
 	private String codiceTransazione;
 	
 	@OneToMany
-	@JoinColumn(name="User_id")
+	@JoinColumn(name="transazione_id")
 	private List<ProdottoAcquistato> listaProdotti;
 	
 	public String getNumeroCarta() {
@@ -36,7 +36,8 @@ public class Transazione {
 	public void setNumeroCarta(String numeroCarta) {
 		this.numeroCarta = numeroCarta;
 	}
-
+	
+	@JsonIgnore
 	@ManyToOne
 	private User user;
 	
