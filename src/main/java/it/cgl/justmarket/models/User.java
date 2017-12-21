@@ -46,9 +46,19 @@ public class User {
 	
 	private String password;
 	
+	private String socialPass;
+	
 	private UserProfileType profileType;
 	
 	
+	public String getSocialPass() {
+		return socialPass;
+	}
+
+	public void setSocialPass(String socialPass) {
+		this.socialPass = socialPass;
+	}
+
 	@OneToMany
 	@JoinColumn(name="User_id")
 	private List<CreditCard> listaCreditCard;

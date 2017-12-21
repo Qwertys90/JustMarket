@@ -141,6 +141,7 @@ public class TransazioneController {
 				prodNew.setQuantitaDaAcquistare(p.getQuantitaDaAcquistare());
 				prodNew.setTransazione(transazione);
 				prodNew.setPrezzoUnitario(p.getPrezzoUnitario());
+				prodNew.setImg(p.getImg());
 				nuovaLista.add(prodNew);
 				logger.info(prodNew+"");
 				prodAcquiService.saveOrUpdateProdottoAcquistato(prodNew);
