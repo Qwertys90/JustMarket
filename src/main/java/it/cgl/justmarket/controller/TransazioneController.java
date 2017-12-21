@@ -102,7 +102,12 @@ public class TransazioneController {
 			if(p.getQuantita()>prodottoService.findById(p.getId()).getQuantita()) {
 				controlloQuantita=true;
 			}
-			String date = p.getDataScadenza().replaceAll("-", "/");
+			String date;
+			if(p.getDataScadenza().contains("-")) {
+				date = p.getDataScadenza().replaceAll("-", "/");
+			}else {
+				date = p.getDataScadenza().replaceAll(",", "/");
+			}
 			date= date.substring(0,10);
 			logger.info(date);
 			
