@@ -84,16 +84,9 @@ public class TransazioneController {
 		User user = userService.findByUsername(auth.getName());
 		boolean controlloQuantita=false;
 		List<ProdottoAcquistato> nuovaLista= new ArrayList<ProdottoAcquistato>();
-//		boolean controlloScadenza=false;
 		double prezzoTotale=0.00;
 		LocalDate dNow = LocalDate.now();
-//					// trasforma data carta
 					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-
-//					// -----
-//		if(dNow.isAfter(scadenza)) {
-//			controlloScadenza=true;
-//		}
 		logger.info("aaaa" + auth.getName());
 
 		for(ProdottoAcquistato p : transazione.getListaProdotti())
@@ -110,9 +103,6 @@ public class TransazioneController {
 			}
 			date= date.substring(0,10);
 			logger.info(date);
-			
-			logger.info("qui ci arrivo");
-
 			YearMonth scadenzaMese = YearMonth.parse(date,formatter);
 			LocalDate scadenza = scadenzaMese.atDay(Integer.parseInt(date.split("/")[2]));
 			logger.info(scadenza.toString());
@@ -124,8 +114,7 @@ public class TransazioneController {
 			prezzoTotale+=p.getPrezzoUnitario()*p.getQuantitaDaAcquistare();
 		}
 	
-		logger.info("aaaa" + auth.getName());
-
+		logger.info("Username-> " + auth.getName());
 		if(!controlloQuantita) {
 			Random random = new Random();
 			String resultNumber = "";
@@ -135,7 +124,7 @@ public class TransazioneController {
 			for(int i=0;i<3;i++){
 			      result += alphabet.charAt(random.nextInt(alphabet.length()));
 			      resultNumber += random.nextInt(number.length());
-			  }
+			}
 			transazione.setData(dNow.toString());
 			transazione.setPrezzoIva(prezzoTotale);
 			transazione.setPrezzoNoIva(prezzoTotale/122*100);
@@ -156,7 +145,7 @@ public class TransazioneController {
 				logger.info(prodNew+"");
 				prodAcquiService.saveOrUpdateProdottoAcquistato(prodNew);
 				Prodotto prodAgg = prodottoService.findById(p.getId());
-				prodAgg.setQuantita(prodAgg.getQuantita()-prodNew.getQuantita());
+				prodAgg.setQuantita(prodAgg.getQuantita()-prodNew.getQuantitaDaAcquistare());
 				prodottoService.saveOrUpdateProdotto(prodAgg);
 				}
 			transazione.setListaProdotti(nuovaLista);
