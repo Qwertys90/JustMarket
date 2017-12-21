@@ -88,10 +88,8 @@ public class TransazioneController {
 		double prezzoTotale=0.00;
 		LocalDate dNow = LocalDate.now();
 //					// trasforma data carta
-//					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
-//					String date = transazione.getCartaDiCredito().getScadenza();
-//					YearMonth scadenzaMese = YearMonth.parse(date, formatter);
-//					LocalDate scadenza = scadenzaMese.atEndOfMonth();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
 //					// -----
 //		if(dNow.isAfter(scadenza)) {
 //			controlloScadenza=true;
@@ -104,6 +102,20 @@ public class TransazioneController {
 			if(p.getQuantita()>prodottoService.findById(p.getId()).getQuantita()) {
 				controlloQuantita=true;
 			}
+			String date = p.getDataScadenza().replaceAll("-", "/");
+			date= date.substring(0,10);
+			logger.info(date);
+			
+			logger.info("qui ci arrivo");
+
+			YearMonth scadenzaMese = YearMonth.parse(date,formatter);
+			LocalDate scadenza = scadenzaMese.atDay(Integer.parseInt(date.split("/")[2]));
+			logger.info(scadenza.toString());
+			if(scadenza.isBefore(dNow.plusDays(3)))
+				p.setPrezzoUnitario(p.getPrezzoUnitario()*0.7);
+			logger.info(scadenza + " "+ dNow + " "+scadenza.compareTo(dNow));
+			if(scadenza.compareTo(dNow)==0)
+				p.setPrezzoUnitario(p.getPrezzoUnitario()*0.3);
 			prezzoTotale+=p.getPrezzoUnitario()*p.getQuantitaDaAcquistare();
 		}
 	

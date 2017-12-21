@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.httpBasic().and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().antMatchers("/getusermodel", "/islogged").permitAll()
+		http.httpBasic().and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll().antMatchers("/offers/getall", "/getusermodel", "/islogged").permitAll()
 				.antMatchers("/login", "/register","/prodotti/getall").permitAll().antMatchers("/creditcard/**","/prodottiacquistati").hasAnyRole("USER", "ADMIN", "DBA")
 				.anyRequest().authenticated().and().logout().logoutUrl("/logoutApp").logoutRequestMatcher(new AntPathRequestMatcher("*")).logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
 				.permitAll().and().csrf().disable();
